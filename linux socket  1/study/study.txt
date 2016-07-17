@@ -1,0 +1,29 @@
+1.遇到了那种奇葩的错误，截图已经准备好了，(.text+0x25): undefined reference to `vtable for ServerSocket' /tmp/ccA2xnDx.o: In function `ServerSocket::ServerSocket()':
+
+最后的的最后没办法在继续查继续查，才发现析构的时候少一个~，真是哔了狗了。
+
+2.Exception was caught:Could not bind to port.Exiting.
+
+这种错误一眼一眼就可看出来，端口被占用，处于time_wait状态，就是缺少了setsockopt
+
+3.static_cast:可以实现C++中内置基本数据类型之间的相互转换。
+  const_cast: const_cast操作不能在不同的种类间转换。相反，它仅仅把一个它作用的表达式转换成常量。它可以使一个本来不是const类型的数据转换成const类型的，或者把const属性去掉
+  reinterpret_cast: 有着和C风格的强制转换同样的能力。它可以转化任何内置的数据类型为其他任何的数据类型，也可以转化任何指针类型为其他的类型。它甚至可以转化内置的数据类型为指针，无须考虑类型安全或者常量的情形。不到万不得已绝对不用。
+   dynamic_cast 都是编译时完成的，dynamic_cast是运行时处理的。而且不用于内置的基本数据类型的强制转化。dynamic_cast如果成功返回的是指向类的指针或者引用，转化失败会返回NULL，dynamic_cast转化的时候一定要有虚函数，否则编译不通过，有虚函数才会有意义。
+只有定义了虚函数类才有虚函数表。在类的转换的时候，向下转化的成功与否与将要转化的类型有关
+
+
+    const_cast，字面上理解就是去const属性。
+　　static_cast，命名上理解是静态类型转换。如int转换成char。
+　　dynamic_cast，命名上理解是动态类型转换。如子类和父类之间的多态类型转换。
+　　reinterpreter_cast，仅仅重新解释类型，但没有进行二进制的转换
+
+
+
+4.为什么析构函数是虚的，如果要用到多态的话，也就是用一个指向基类的指针来处理对不同到对象如果类的成员函数不是虚函数，只是个普通的函数，那么会出现一种静态绑定到情况，如
+
+Base* pBase = new Derive; //这里Base的析构函数不是虚函数
+
+delete pBase; //这里只会调用Base::~Base()，所以派生类部分的资源将得不到释放如果析构函数是虚函数的话，那么将调用Derive::~Derive()，由于我们提供了派生类的析构函数，编译器会扩展这个析构函数，在里面调用基类的析构函数，这样派生类和基类的资源都将得到释放
+
+ 
