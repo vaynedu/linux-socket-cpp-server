@@ -33,7 +33,7 @@ class Socket
         void SetNonBlocking(const bool flag);
         bool IsValid()const;
         char *GetAddress();
-        int  GetPort();
+        int   GetPort();
 
         virtual ~Socket();
 
